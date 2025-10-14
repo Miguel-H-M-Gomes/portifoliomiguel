@@ -1,14 +1,12 @@
-// script.js
-// Menu responsivo e animações leves para o portfólio
 document.addEventListener('DOMContentLoaded', () => {
 	// Helpers
 	const qs = (s, root = document) => root.querySelector(s);
 	const qsa = (s, root = document) => Array.from(root.querySelectorAll(s));
 
-	// Seletor do nav
+	
 	const nav = qs('nav');
 	if (nav) {
-		// Se não houver um botão de toggle, cria um (para não quebrar versões anteriores)
+
 		let menuToggle = qs('#menu-toggle', nav);
 		if (!menuToggle) {
 			menuToggle = document.createElement('button');
@@ -31,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			nav.appendChild(menuToggle);
 		}
 
-		// Se não houver menu-list, cria com links para as seções conhecidas
+		
 		let menuList = qs('#menu-list', nav);
 		const sections = qsa('section').map(s => s.id).filter(Boolean);
 		if (!menuList) {
@@ -45,9 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
 				margin: '0',
 				padding: '0',
 			});
-			// Preencher links
+			
 			if (sections.length === 0) {
-				// fallback
+				
 				['inicio', 'sobre', 'contato'].forEach(id => {
 					const li = document.createElement('li');
 					const a = document.createElement('a');
@@ -61,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					const li = document.createElement('li');
 					const a = document.createElement('a');
 					a.href = `#${id}`;
-					// Texto do link baseado no id (mais amigável)
+					
 					a.textContent = id === 'inicio' ? 'Início' : id.charAt(0).toUpperCase() + id.slice(1);
 					li.appendChild(a);
 					menuList.appendChild(li);
@@ -69,8 +67,23 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 			nav.appendChild(menuList);
 		}
+		
+const btnBoasVindas = document.getElementById('btn-boas-vindas');
+    const msgBoasVindas = document.getElementById('mensagem-boas-vindas');
+    if (btnBoasVindas && msgBoasVindas) {
+        btnBoasVindas.addEventListener('click', () => {
+            msgBoasVindas.textContent = 'Seja bem-vindo ao meu portfólio!';
+            msgBoasVindas.style.display = 'block';
+            msgBoasVindas.style.opacity = '0';
+            msgBoasVindas.style.transition = 'opacity 600ms';
+            setTimeout(() => {
+                msgBoasVindas.style.opacity = '1';
+            }, 10);
+        });
+    }
 
-		// Função que ajusta visibilidade do menuToggle/menuList conforme largura
+
+
 		function checkMenu() {
 			if (window.innerWidth <= 700) {
 				menuToggle.style.display = 'block';
@@ -98,16 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		checkMenu();
 		window.addEventListener('resize', checkMenu);
 
-		// Toggle do menu
 		menuToggle.addEventListener('click', () => {
 			if (menuList.style.display === 'none' || menuList.style.display === '') {
 				menuList.style.display = 'flex';
-				// animação leve
+				
 				menuList.style.opacity = '0';
 				menuList.style.transition = 'opacity 220ms ease';
 				requestAnimationFrame(() => menuList.style.opacity = '1');
 			} else {
-				// esconder com fade
+				
 				menuList.style.opacity = '0';
 				menuList.addEventListener('transitionend', function onEnd() {
 					menuList.style.display = 'none';
@@ -116,11 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		});
 
-		// Smooth scroll para links do menu e fechar menu em mobile
 		qsa('#menu-list a', nav).forEach(a => {
 			a.style.cursor = 'pointer';
 			a.addEventListener('click', (e) => {
-				e.preventDefault();
 				const target = document.querySelector(a.getAttribute('href'));
 				if (target) target.scrollIntoView({ behavior: 'smooth' });
 				if (window.innerWidth <= 700) {
@@ -135,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 
-	// Animação leve no título
 	const title = qs('h1');
 	if (title) {
 		title.style.opacity = '0';
@@ -147,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		}, 200);
 	}
 
-	// Hover suave na imagem de perfil
 	const foto = qs('#foto');
 	if (foto) {
 		foto.style.transition = 'transform 260ms ease, box-shadow 260ms ease';
@@ -161,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 
-	// Reveal das seções ao scroll usando IntersectionObserver
 	const sections = qsa('section');
 	if (sections.length > 0 && 'IntersectionObserver' in window) {
 		sections.forEach(sec => {
@@ -180,14 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		}, { threshold: 0.12 });
 		sections.forEach(s => observer.observe(s));
 	} else {
-		// Fallback: simplesmente mostrar as seções
+s
 		sections.forEach(s => {
 			s.style.opacity = '1';
 			s.style.transform = 'translateY(0)';
 		});
 	}
 
-	// Botão voltar ao topo (cria se não existir)
+
 	let btnTopo = qs('#btn-voltar-topo');
 	if (!btnTopo) {
 		btnTopo = document.createElement('a');
@@ -213,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 		document.body.appendChild(btnTopo);
 	}
-	// Mostrar/ocultar botão ao rolar
+	
 	window.addEventListener('scroll', () => {
 		if (window.scrollY > 220) {
 			btnTopo.style.display = 'block';
@@ -221,12 +228,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			btnTopo.style.transition = 'opacity 240ms ease';
 		} else {
 			btnTopo.style.opacity = '0';
-			// esconder depois da transição para não ocupar foco
+		
 			setTimeout(() => { if (window.scrollY <= 220) btnTopo.style.display = 'none'; }, 260);
 		}
 	});
 
-	// Melhorias: fechar menu ao clicar fora (em mobile)
 	document.addEventListener('click', (e) => {
 		const menuList = qs('#menu-list');
 		const menuToggle = qs('#menu-toggle');
@@ -241,4 +247,50 @@ document.addEventListener('DOMContentLoaded', () => {
 			});
 		}
 	});
+});
+document.addEventListener('DOMContentLoaded', () => {
+    // Hamburger menu
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuList = document.getElementById('menu-list');
+
+    function closeMenu() {
+        menuList.classList.remove('show');
+    }
+
+    function openMenu() {
+        menuList.classList.add('show');
+    }
+
+    if (menuToggle && menuList) {
+        menuToggle.addEventListener('click', () => {
+            menuList.classList.toggle('show');
+        });
+
+        menuList.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 700) closeMenu();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth > 700) return;
+            if (!menuList.contains(e.target) && e.target !== menuToggle) {
+                closeMenu();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 700) closeMenu();
+        });
+    }
+
+    // Mensagem de boas-vindas animada
+    const btnBoasVindas = document.getElementById('btn-boas-vindas');
+    const msgBoasVindas = document.getElementById('mensagem-boas-vindas');
+    if (btnBoasVindas && msgBoasVindas) {
+        btnBoasVindas.addEventListener('click', () => {
+            msgBoasVindas.textContent = 'Seja bem-vindo ao meu portfólio!';
+            msgBoasVindas.style.opacity = '1';
+        });
+    }
 });

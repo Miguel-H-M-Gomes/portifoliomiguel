@@ -4,48 +4,32 @@
     <meta charset="UTF-8">
     <title>Portfólio - Miguel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
+    <!-- Menu hamburger universal -->
+    <nav id="hamburger-nav">
+        <button id="menu-toggle" aria-label="Abrir menu">&#9776;</button>
+        <ul id="menu-list">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="contato.html">Contato</a></li>
+        </ul>
     </nav>
 
-    <section id="inicio">
-        <h1>Miguel</h1>
-        <img src="img/Metagross.jpeg" alt="Foto de Miguel" id="foto">
-        <p>Bem-vindo ao meu portfólio! Aqui você vai conhecer um pouco sobre mim, meus interesses e como entrar em contato.</p>
-        <div>
-        </div>
-    </section>
-    <section id="sobre">
-        <h2>Sobre Mim</h2>
-        <div></div>
-            <p>
-                Olá! Meu nome é Miguel, sou estudante do Colégio Sesc Senac. Tenho paixão por tecnologia, futebol e videogames. 
-                Gosto de aprender coisas novas, principalmente sobre programação e inovação. 
-                Nos meus momentos livres, adoro jogar futebol com os amigos e explorar novos jogos eletrônicos.
-            </p>
-            <ul>
-                <li><strong>Idade:</strong> 15 anos</li>
-                <li><strong>Cidade:</strong> Arapongas, PR</li>
-                <li><strong>Hobbies:</strong> Futebol, videogames, programação</li>
-            </ul>
-        </div>
-    </section>
+    <main>
+        <section id="inicio" class="inicio-section">
+            <h1 class="fade-in">Miguel Gomes</h1>
+            <img src="img/Metagross.jpeg" alt="Foto de Miguel" id="foto">
+            <button id="btn-boas-vindas" class="button">Clique para receber boas-vindas</button>
+            <p id="mensagem-boas-vindas" class="boas-vindas"></p>
+            <p class="descricao">Bem-vindo ao meu portfólio! Aqui você vai conhecer um pouco sobre mim, meus interesses e como entrar em contato.</p>
+        </section>
+    </main>
 
-    <section id="contato">
-        <h2>Contato</h2>
-        
-            <p>Entre em contato comigo:</p>
-            <ul>
-                <li><strong>E-mail:</strong> <a href="mailto:miguelhmgomes@gmail.com">miguelhmgomes@gmail.com</a></li>
-                <li><strong>Telefone:</strong> (77) 99944-9810</li>
-            </form>
-        </div>
-    </section>
     <footer>
-        <button>
+        &copy; 2025 Miguel Gomes. Inspirado nas cores do Metagross.
     </footer>
+    <script src="script.js"></script>
 </body>
 </html>

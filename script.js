@@ -249,48 +249,140 @@ s
 	});
 });
 document.addEventListener('DOMContentLoaded', () => {
-    // Hamburger menu
-    const menuToggle = document.getElementById('menu-toggle');
-    const menuList = document.getElementById('menu-list');
+    const qs = (s, root = document) => root.querySelector(s);
+    const qsa = (s, root = document) => Array.from(root.querySelectorAll(s));
 
-    function closeMenu() {
-        menuList.classList.remove('show');
+    const nav = qs('#hamburger-nav') || qs('nav');
+    if (!nav) return;
+
+    // cria/garante botão toggle
+    let menuToggle = qs('#menu-toggle', nav);
+    if (!menuToggle) {
+        menuToggle = document.createElement('button');
+        menuToggle.id = 'menu-toggle';
+        menuToggle.setAttribute('aria-label', 'Abrir menu');
+        menuToggle.innerHTML = '&#9776;'; // ☰
+        nav.appendChild(menuToggle);
+    }
+    // sempre visível (PC e mobile)
+    Object.assign(menuToggle.style, {
+        display: 'block',
+        background: 'none',
+        border: 'none',
+        fontSize: '28px',
+        color: '#f7c948',
+        cursor: 'pointer',
+        padding: '8px 12px',
+        zIndex: '1200',
+        position: 'relative'
+    });
+
+    // cria/garante lista de menu
+    let menuList = qs('#menu-list', nav);
+    if (!menuList) {
+        menuList = document.createElement('ul');
+        menuList.id = 'menu-list';
+        menuList.innerHTML = `
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="contato.html">Contato</a></li>
+        `;
+        nav.appendChild(menuList);
     }
 
+    // estilos base do menu (controlados por script para evitar conflitos)
+    Object.assign(menuList.style, {
+        listStyle: 'none',
+        margin: '0',
+        padding: '6px 0',
+        display: 'none', // escondido até abrir
+        flexDirection: 'column',
+        position: 'absolute',
+        top: (menuToggle.offsetHeight + 8) + 'px',
+        right: '12px',
+        background: '#3a5a6b',
+        borderRadius: '10px',
+        minWidth: '180px',
+        boxShadow: '0 8px 26px rgba(0,0,0,0.15)',
+        zIndex: '1100',
+        gap: '0',
+        overflow: 'hidden',
+        transition: 'opacity 200ms ease, transform 200ms ease',
+        opacity: '0',
+        transform: 'translateY(-6px)'
+    });
+
+    // estilo links
+    qsa('a', menuList).forEach(a => {
+        Object.assign(a.style, {
+            display: 'block',
+            padding: '12px 20px',
+            color: '#f7c948',
+            textDecoration: 'none',
+            fontWeight: '700'
+        });
+        a.addEventListener('mouseenter', () => { a.style.background = '#6ec6e6'; a.style.color = '#00343a'; });
+        a.addEventListener('mouseleave', () => { a.style.background = 'transparent'; a.style.color = '#f7c948'; });
+    });
+
+    let menuOpen = false;
     function openMenu() {
-        menuList.classList.add('show');
+        menuList.style.display = 'flex';
+        // forçar reflow antes da animação
+        void menuList.offsetWidth;
+        menuList.style.opacity = '1';
+        menuList.style.transform = 'translateY(0)';
+        menuOpen = true;
+    }
+    function closeMenu() {
+        menuList.style.opacity = '0';
+        menuList.style.transform = 'translateY(-6px)';
+        menuOpen = false;
+        setTimeout(() => {
+            if (!menuOpen) menuList.style.display = 'none';
+        }, 220);
     }
 
-    if (menuToggle && menuList) {
-        menuToggle.addEventListener('click', () => {
-            menuList.classList.toggle('show');
-        });
+    menuToggle.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (menuOpen) closeMenu(); else openMenu();
+    });
 
-        menuList.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 700) closeMenu();
-            });
-        });
+    // fecha ao clicar fora
+    document.addEventListener('click', (e) => {
+        if (!menuOpen) return;
+        if (!menuList.contains(e.target) && e.target !== menuToggle) closeMenu();
+    });
 
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth > 700) return;
-            if (!menuList.contains(e.target) && e.target !== menuToggle) {
+    // fechar ao pressionar ESC
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+
+    // links: não bloquear navegação entre páginas; tratar apenas âncoras internas
+    qsa('a', menuList).forEach(a => {
+        a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href') || '';
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
                 closeMenu();
+            } else {
+                // permite navegação normal para index.html, sobre.html, contato.html
+                closeMenu(); // fecha menu antes de navegar
             }
         });
+    });
 
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 700) closeMenu();
-        });
-    }
-
-    // Mensagem de boas-vindas animada
-    const btnBoasVindas = document.getElementById('btn-boas-vindas');
-    const msgBoasVindas = document.getElementById('mensagem-boas-vindas');
-    if (btnBoasVindas && msgBoasVindas) {
-        btnBoasVindas.addEventListener('click', () => {
-            msgBoasVindas.textContent = 'Seja bem-vindo ao meu portfólio!';
-            msgBoasVindas.style.opacity = '1';
-        });
-    }
+    // ajustar posição do menu ao redimensionar e garantir botão sempre visível
+    window.addEventListener('resize', () => {
+        menuList.style.top = (menuToggle.offsetHeight + 8) + 'px';
+        // garantir que o toggle permaneça visível (corrige quando outro código altera)
+        menuToggle.style.display = 'block';
+        // se estiver aberto, manter aberto; se estiver fechado, manter display none
+        if (!menuOpen) {
+            menuList.style.display = 'none';
+            menuList.style.opacity = '0';
+            menuList.style.transform = 'translateY(-6px)';
+        }
+    });
 });
